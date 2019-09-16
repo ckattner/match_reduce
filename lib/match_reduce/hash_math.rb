@@ -7,6 +7,9 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-module MatchReduce
-  VERSION = '1.0.0-alpha'
+require_relative 'hash_math/matrix'
+require_relative 'hash_math/prototype'
+
+# HashMath is a collection of general-purpose hash compute functions.
+module HashMath
 end

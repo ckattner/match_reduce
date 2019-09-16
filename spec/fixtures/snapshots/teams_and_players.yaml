@@ -1,0 +1,173 @@
+records:
+  - team: bulls
+    team_points: 1000
+    player: michael_jordan
+    player_points: 750
+
+  - team: bulls
+    team_points: 1000
+    player: scottie_pippen
+    player_points: 150
+
+  - team: wizards
+    team_points: 800
+    player: michael_jordan
+    player_points: 600
+
+  - team: wizards
+    team_points: 800
+    player: rip_hamilton
+    player_points: 200
+
+  - team: pistons
+    team_points: 1200
+    player: rip_hamilton
+    player_points: 300
+
+  - team: bulls
+    team_points: 1000
+    player: rip_hamilton
+    player_points: 100
+
+aggregates:
+  - name: total_points_by_team_player
+    patterns:
+    sum_reducer_key: player_points
+
+  - name: total_points_by_team
+    patterns:
+    sum_reducer_key: team_points
+    group_keys: team
+
+  - name: bulls_points_by_team
+    patterns:
+      team: bulls
+    sum_reducer_key: team_points
+    group_keys: team
+
+  - name: wizards_points_by_team
+    patterns:
+      team: wizards
+    sum_reducer_key: team_points
+    group_keys: team
+
+  - name: jordan_points_for_bulls
+    patterns:
+      team: bulls
+      player: michael_jordan
+    sum_reducer_key: player_points
+
+  - name: all_jordan_points
+    patterns:
+      player: michael_jordan
+    sum_reducer_key: player_points
+
+  - name: rip_points_for_detroit_and_wizards
+    patterns:
+      - player: rip_hamilton
+        team: wizards
+      - player: rip_hamilton
+        team: pistons
+    sum_reducer_key: player_points
+
+results:
+  - name: total_points_by_team_player
+    records:
+      - team: bulls
+        team_points: 1000
+        player: michael_jordan
+        player_points: 750
+
+      - team: bulls
+        team_points: 1000
+        player: scottie_pippen
+        player_points: 150
+
+      - team: wizards
+        team_points: 800
+        player: michael_jordan
+        player_points: 600
+
+      - team: wizards
+        team_points: 800
+        player: rip_hamilton
+        player_points: 200
+
+      - team: pistons
+        team_points: 1200
+        player: rip_hamilton
+        player_points: 300
+
+      - team: bulls
+        team_points: 1000
+        player: rip_hamilton
+        player_points: 100
+    value: 2100
+
+  - name: total_points_by_team
+    records:
+      - team: bulls
+        team_points: 1000
+        player: michael_jordan
+        player_points: 750
+
+      - team: wizards
+        team_points: 800
+        player: michael_jordan
+        player_points: 600
+
+      - team: pistons
+        team_points: 1200
+        player: rip_hamilton
+        player_points: 300
+    value: 3000
+
+  - name: bulls_points_by_team
+    records:
+      - team: bulls
+        team_points: 1000
+        player: michael_jordan
+        player_points: 750
+    value: 1000
+
+  - name: wizards_points_by_team
+    records:
+      - team: wizards
+        team_points: 800
+        player: michael_jordan
+        player_points: 600
+    value: 800
+
+  - name: jordan_points_for_bulls
+    records:
+      - team: bulls
+        team_points: 1000
+        player: michael_jordan
+        player_points: 750
+    value: 750
+
+  - name: all_jordan_points
+    records:
+      - team: bulls
+        team_points: 1000
+        player: michael_jordan
+        player_points: 750
+
+      - team: wizards
+        team_points: 800
+        player: michael_jordan
+        player_points: 600
+    value: 1350
+
+  - name: rip_points_for_detroit_and_wizards
+    records:
+      - team: wizards
+        team_points: 800
+        player: rip_hamilton
+        player_points: 200
+
+      - team: pistons
+        team_points: 1200
+        player: rip_hamilton
+        player_points: 300
+    value: 500

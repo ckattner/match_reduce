@@ -7,6 +7,9 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+require 'pry'
+require 'yaml'
+
 unless ENV['DISABLE_SIMPLECOV'] == 'true'
   require 'simplecov'
   require 'simplecov-console'
@@ -18,3 +21,15 @@ unless ENV['DISABLE_SIMPLECOV'] == 'true'
 end
 
 require './lib/match_reduce'
+
+def fixture_path(*filename)
+  File.join('spec', 'fixtures', filename)
+end
+
+def yaml_fixture(*filename)
+  YAML.safe_load(fixture(*filename))
+end
+
+def fixture(*filename)
+  File.open(fixture_path(*filename), 'r:bom|utf-8').read
+end
