@@ -11,23 +11,23 @@ require 'spec_helper'
 
 describe MatchReduce::Processor do
   def make_sum_reducer(key)
+    return nil if key.to_s.empty?
+
     ->(memo, record, resolver) { memo.to_i + resolver.get(record, key).to_i }
   end
 
   def snapshot(snapshot)
-    records     = snapshot['records'] || []
-    aggregates  = (snapshot['aggregates'] || []).map do |a|
-      reducer = a['sum_reducer_key'] ? make_sum_reducer(a['sum_reducer_key']) : nil
-
+    records     = snapshot.fetch('records', [])
+    aggregates  = snapshot.fetch('aggregates', []).map do |a|
       {
         name: a['name'],
         patterns: a['patterns'],
-        reducer: reducer,
+        reducer: make_sum_reducer(a['sum_reducer_key']),
         group_keys: a['group_keys']
       }
     end
 
-    results = (snapshot['results'] || []).map do |r|
+    results = snapshot.fetch('results', []).map do |r|
       MatchReduce::Processor::Result.new(r['name'], r['records'], r['value'])
     end
 
@@ -49,8 +49,9 @@ describe MatchReduce::Processor do
 
         results = subject.add_each(example.records).results
 
-        expect(example.results.length).to eq(example.aggregates.length),
-          "invalid snapshot: #{example.results.length} results != #{example.aggregates.length} aggs"
+        err_msg = "invalid: #{example.results.length} results != #{example.aggregates.length} aggs"
+
+        expect(example.results.length).to eq(example.aggregates.length), err_msg
 
         results.each_with_index do |result, i|
           expect(result).to eq(example.results[i])
