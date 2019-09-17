@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.4.6'
 
   s.add_dependency('acts_as_hashable', '~>1', '>=1.1.0')
+  s.add_dependency('hash_math', '>=1.0.0-alpah')
   s.add_dependency('objectable', '~>1')
 
   s.add_development_dependency('guard-rspec', '~>4.7')

@@ -25,6 +25,10 @@ module MatchReduce
       freeze
     end
 
+    def keys
+      patterns.flat_map(&:keys)
+    end
+
     def reduce(memo, record)
       reducer ? reducer.call(memo, record) : memo
     end

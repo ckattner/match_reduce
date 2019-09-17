@@ -8,11 +8,11 @@
 #
 
 require 'acts_as_hashable'
+require 'hash_math'
 require 'objectable'
 
 require_relative 'match_reduce/any'
 require_relative 'match_reduce/aggregate'
-require_relative 'match_reduce/hash_math'
 require_relative 'match_reduce/index'
 require_relative 'match_reduce/processor'
 

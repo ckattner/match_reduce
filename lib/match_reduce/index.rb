@@ -15,19 +15,19 @@ module MatchReduce
 
     attr_reader :aggregates, :any_value, :lookup
 
-    def_delegators :prototype, :keys
+    def_delegators :record, :keys
 
     def initialize(aggregates = [], any_value = ANY)
       @any_value  = any_value
       @aggregates = Aggregate.array(aggregates).uniq(&:name)
       @lookup     = {}
 
-      all_patterns  = @aggregates.flat_map(&:patterns)
-      @prototype    = HashMath::Prototype.new(all_patterns, base_value: any_value)
+      all_keys = @aggregates.flat_map(&:keys)
+      @record  = HashMath::Record.new(all_keys, any_value)
 
       @aggregates.map do |aggregate|
         aggregate.patterns.each do |pattern|
-          normalized_pattern = prototype.make!(pattern)
+          normalized_pattern = record.make!(pattern)
 
           (@lookup[normalized_pattern] ||= Set.new) << aggregate
         end
@@ -42,6 +42,6 @@ module MatchReduce
 
     private
 
-    attr_reader :prototype
+    attr_reader :record
   end
 end
