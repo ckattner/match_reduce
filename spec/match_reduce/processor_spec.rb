@@ -11,16 +11,12 @@ require 'spec_helper'
 
 describe MatchReduce::Processor do
   def make_sum_reducer(key)
-    ->(memo, record) { memo.to_i + record[key].to_i }
+    ->(memo, record, resolver) { memo.to_i + resolver.get(record, key).to_i }
   end
 
-  let(:resolver) { Objectable.resolver }
-
-  specify 'README example produces correct output' do
-    snapshot = yaml_fixture('snapshots', 'teams_and_players.yaml')
-
-    records     = snapshot['records']
-    aggregates  = snapshot['aggregates'].map do |a|
+  def snapshot(snapshot)
+    records     = snapshot['records'] || []
+    aggregates  = (snapshot['aggregates'] || []).map do |a|
       reducer = a['sum_reducer_key'] ? make_sum_reducer(a['sum_reducer_key']) : nil
 
       {
@@ -31,16 +27,35 @@ describe MatchReduce::Processor do
       }
     end
 
-    subject = described_class.new(aggregates, resolver)
-
-    results = subject.add_each(records).results
-
-    expected = snapshot['results'].map do |r|
+    results = (snapshot['results'] || []).map do |r|
       MatchReduce::Processor::Result.new(r['name'], r['records'], r['value'])
     end
 
-    results.each_with_index do |result, i|
-      expect(result).to eq(expected[i])
+    OpenStruct.new(
+      records: records,
+      aggregates: aggregates,
+      results: results
+    )
+  end
+
+  let(:resolver) { Objectable.resolver }
+
+  describe 'snapshots' do
+    yaml_fixture_files('snapshots', 'processor').each_pair do |filename, snapshot_config|
+      specify File.basename(filename) do
+        example = snapshot(snapshot_config)
+
+        subject = described_class.new(example.aggregates, resolver)
+
+        results = subject.add_each(example.records).results
+
+        expect(example.results.length).to eq(example.aggregates.length),
+          "invalid snapshot: #{example.results.length} results != #{example.aggregates.length} aggs"
+
+        results.each_with_index do |result, i|
+          expect(result).to eq(example.results[i])
+        end
+      end
     end
   end
 end

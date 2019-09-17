@@ -33,3 +33,20 @@ end
 def fixture(*filename)
   File.open(fixture_path(*filename), 'r:bom|utf-8').read
 end
+
+def yaml_read(filename)
+  YAML.safe_load(read(filename))
+end
+
+def read(filename)
+  File.open(filename, 'r:bom|utf-8').read
+end
+
+def yaml_fixture_files(*directory)
+  Dir[fixture_path(*directory, '*.yaml')].map do |filename|
+    [
+      filename,
+      yaml_read(filename)
+    ]
+  end.to_h
+end

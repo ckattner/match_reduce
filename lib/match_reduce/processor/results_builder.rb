@@ -13,8 +13,13 @@ module MatchReduce
   class Processor
     # This class knows how to group together aggregates in order to produce results.
     class ResultsBuilder
-      def initialize(aggregates)
-        @result_by_name = aggregates.map { |a| [a.name, ResultBuilder.new(a)] }.to_h
+      attr_reader :resolver
+
+      def initialize(aggregates, resolver)
+        raise ArgumentError, 'aggregates are required' unless aggregates
+
+        @result_by_name = aggregates.map { |a| [a.name, ResultBuilder.new(a, resolver)] }.to_h
+        @resolver       = resolver
 
         freeze
       end

@@ -1,0 +1,68 @@
+records:
+  - { a: a1, b: b1, c: c1, d: d1, e: e1, val: 1 }
+  - { a: a2, b: b2, c: c2, d: d2, e: e2, val: 2 }
+  - { a: a3, b: b3, c: c3, d: d3, e: e3, val: 3 }
+
+aggregates:
+  - name: all (no patterns)
+    sum_reducer_key: val
+    patterns:
+  - name: all (match all patterns)
+    sum_reducer_key: val
+    patterns:
+      - a: a1
+      - b: b2
+      - c: c3
+  - name: match 1
+    sum_reducer_key: val
+    patterns:
+      - a: a1
+        d: d1
+      - z: z2
+        a: a2
+  - name: match 1 and 3
+    sum_reducer_key: val
+    patterns:
+      - a: a1
+        d: d1
+      - z: z2
+        a: a2
+      - a: a3
+        c: c3
+  - name: no matches
+    sum_reducer_key: val
+    patterns:
+      - a: a1
+        b: b2
+      - a: a8
+        b: a8
+      - z: z1
+      - A: a1
+      - a: A1
+      - a: 1
+
+results:
+  - name: all (no patterns)
+    value: 6
+    records:
+      - { a: a1, b: b1, c: c1, d: d1, e: e1, val: 1 }
+      - { a: a2, b: b2, c: c2, d: d2, e: e2, val: 2 }
+      - { a: a3, b: b3, c: c3, d: d3, e: e3, val: 3 }
+  - name: all (match all patterns)
+    value: 6
+    records:
+      - { a: a1, b: b1, c: c1, d: d1, e: e1, val: 1 }
+      - { a: a2, b: b2, c: c2, d: d2, e: e2, val: 2 }
+      - { a: a3, b: b3, c: c3, d: d3, e: e3, val: 3 }
+  - name: match 1
+    value: 1
+    records:
+      - { a: a1, b: b1, c: c1, d: d1, e: e1, val: 1 }
+  - name: match 1 and 3
+    value: 4
+    records:
+      - { a: a1, b: b1, c: c1, d: d1, e: e1, val: 1 }
+      - { a: a3, b: b3, c: c3, d: d3, e: e3, val: 3 }
+  - name: no matches
+    value:
+    records: []

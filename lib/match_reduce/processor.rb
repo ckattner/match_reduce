@@ -16,16 +16,13 @@ module MatchReduce
   class Processor
     extend Forwardable
 
-    attr_reader :resolver
-
-    def_delegators :results_builder, :results
+    def_delegators :results_builder, :results, :resolver
 
     def_delegators :index, :aggregates
 
     def initialize(aggregates, resolver)
       @index            = Index.new(aggregates)
-      @results_builder  = ResultsBuilder.new(index.aggregates)
-      @resolver         = resolver
+      @results_builder  = ResultsBuilder.new(index.aggregates, resolver)
 
       freeze
     end

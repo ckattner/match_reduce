@@ -12,7 +12,10 @@ module MatchReduce
   class Aggregate
     acts_as_hashable
 
-    attr_reader :group_keys, :name, :patterns, :reducer
+    attr_reader :group_keys,
+                :name,
+                :patterns,
+                :reducer
 
     def initialize(name:, group_keys: [], patterns: [], reducer: nil)
       raise ArgumentError, 'name is required' if name.to_s.empty?
@@ -29,8 +32,8 @@ module MatchReduce
       patterns.flat_map(&:keys)
     end
 
-    def reduce(memo, record)
-      reducer ? reducer.call(memo, record) : memo
+    def reduce(memo, record, resolver)
+      reducer ? reducer.call(memo, record, resolver) : memo
     end
 
     def grouped?

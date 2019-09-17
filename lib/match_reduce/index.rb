@@ -13,7 +13,9 @@ module MatchReduce
   class Index
     extend Forwardable
 
-    attr_reader :aggregates, :any_value, :lookup
+    attr_reader :aggregates,
+                :any_value,
+                :lookup
 
     def_delegators :record, :keys
 
@@ -29,7 +31,7 @@ module MatchReduce
         aggregate.patterns.each do |pattern|
           normalized_pattern = record.make!(pattern)
 
-          (@lookup[normalized_pattern] ||= Set.new) << aggregate
+          get(normalized_pattern) << aggregate
         end
       end
 
@@ -43,5 +45,9 @@ module MatchReduce
     private
 
     attr_reader :record
+
+    def get(normalized_pattern)
+      lookup[normalized_pattern] ||= Set.new
+    end
   end
 end

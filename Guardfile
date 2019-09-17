@@ -10,6 +10,12 @@ guard :rspec, cmd: 'DISABLE_SIMPLECOV=true bundle exec rspec --format=documentat
   watch(rspec.spec_support) { rspec.spec_dir }
   watch(rspec.spec_files)
 
+  watch(%r{^spec/fixtures/snapshots(.*)(\.yaml)$}) do |m|
+    spec_file = m[1].split('/')[0...-1].join('/')
+
+    File.join('spec', 'match_reduce', "#{spec_file}_spec.rb")
+  end
+
   # Ruby files
   ruby = dsl.ruby
   dsl.watch_spec_files_for(ruby.lib_files)

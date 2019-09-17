@@ -5,10 +5,10 @@ require './lib/match_reduce/version'
 Gem::Specification.new do |s|
   s.name        = 'match_reduce'
   s.version     = MatchReduce::VERSION
-  s.summary     = 'Data matching and aggregation framework'
+  s.summary     = 'Dataset aggregation and reducer algorithm'
 
   s.description = <<-DESCRIPTION
-    This library take a dataset and pattern matchers and sifts the dataset into the appropriate matchers.  Each matcher can then reduce down the matching data.
+    High speed data aggregator and reducer algorithm based on key-value exact matching and grouping.
   DESCRIPTION
 
   s.authors     = ['Matthew Ruggio']
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.4.6'
 
   s.add_dependency('acts_as_hashable', '~>1', '>=1.1.0')
-  s.add_dependency('hash_math', '>=1.0.0-alpah')
+  s.add_dependency('hash_math', '>=1.0.0-alpha')
   s.add_dependency('objectable', '~>1')
 
   s.add_development_dependency('guard-rspec', '~>4.7')
