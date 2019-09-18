@@ -11,7 +11,7 @@ require 'acts_as_hashable'
 require 'hash_math'
 require 'objectable'
 
-require_relative 'match_reduce/aggregate'
+require_relative 'match_reduce/aggregator'
 require_relative 'match_reduce/index'
 require_relative 'match_reduce/processor'
 
@@ -22,8 +22,8 @@ module MatchReduce
   ANY = :__ANY__
 
   class << self
-    def process(aggregates, records, resolver: Objectable.resolver, any: ANY)
-      Processor.new(aggregates, resolver: resolver, any: any)
+    def process(aggregators, records, resolver: Objectable.resolver, any: ANY)
+      Processor.new(aggregators, resolver: resolver, any: any)
                .add_each(records)
                .results
     end

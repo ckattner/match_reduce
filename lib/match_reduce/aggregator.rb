@@ -8,8 +8,8 @@
 #
 
 module MatchReduce
-  # An aggregate is a group of patterns with a reducer that you wish to report on.
-  class Aggregate
+  # An aggregator is a group of patterns with a reducer that you wish to report on.
+  class Aggregator
     acts_as_hashable
 
     attr_reader :group_keys,
@@ -22,7 +22,7 @@ module MatchReduce
 
       @name       = name
       @group_keys = Array(group_keys)
-      @patterns   = stringed_keys(not_empty(array(patterns)))
+      @patterns   = stringed_keys(ensure_not_empty(array(patterns)))
       @reducer    = reducer
 
       freeze
@@ -54,7 +54,7 @@ module MatchReduce
       val.is_a?(Hash) ? [val] : Array(val)
     end
 
-    def not_empty(val)
+    def ensure_not_empty(val)
       val.empty? ? [{}] : val
     end
   end

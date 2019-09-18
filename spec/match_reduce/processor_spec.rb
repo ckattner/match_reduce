@@ -17,8 +17,8 @@ describe MatchReduce::Processor do
   end
 
   def snapshot(snapshot)
-    records     = snapshot.fetch('records', [])
-    aggregates  = snapshot.fetch('aggregates', []).map do |a|
+    records = snapshot.fetch('records', [])
+    aggregators = snapshot.fetch('aggregators', []).map do |a|
       {
         name: a['name'],
         patterns: a['patterns'],
@@ -33,7 +33,7 @@ describe MatchReduce::Processor do
 
     OpenStruct.new(
       records: records,
-      aggregates: aggregates,
+      aggregators: aggregators,
       results: results
     )
   end
@@ -43,13 +43,13 @@ describe MatchReduce::Processor do
       specify File.basename(filename) do
         example = snapshot(snapshot_config)
 
-        subject = described_class.new(example.aggregates)
+        subject = described_class.new(example.aggregators)
 
         results = subject.add_each(example.records).results
 
-        err_msg = "invalid: #{example.results.length} results != #{example.aggregates.length} aggs"
+        err_msg = "invalid: #{example.results.length} results != #{example.aggregators.length} aggs"
 
-        expect(example.results.length).to eq(example.aggregates.length), err_msg
+        expect(example.results.length).to eq(example.aggregators.length), err_msg
 
         results.each_with_index do |result, i|
           expect(result).to eq(example.results[i])

@@ -11,14 +11,14 @@ require_relative 'result'
 
 module MatchReduce
   class Processor
-    # This class understands how to take an aggregate and derive a result for it.
+    # This class understands how to take an aggregator and derive a result for it.
     class ResultBuilder
-      def initialize(aggregate, resolver)
-        raise ArgumentError, 'aggregate is required'  unless aggregate
-        raise ArgumentError, 'resolver is required'   unless resolver
+      def initialize(aggregator, resolver)
+        raise ArgumentError, 'aggregator is required' unless aggregator
+        raise ArgumentError, 'resolver is required' unless resolver
 
-        @aggregate  = aggregate
-        @resolver   = resolver
+        @aggregator = aggregator
+        @resolver = resolver
 
         @records    = []
         @value      = nil
@@ -26,7 +26,7 @@ module MatchReduce
       end
 
       def add(record, group_id)
-        if aggregate.grouped?
+        if aggregator.grouped?
           return self if group_ids.include?(group_id)
 
           group_ids << group_id
@@ -34,18 +34,18 @@ module MatchReduce
 
         records << record
 
-        @value = aggregate.reduce(value, record, resolver)
+        @value = aggregator.reduce(value, record, resolver)
 
         self
       end
 
       def result
-        Result.new(aggregate.name, records, value)
+        Result.new(aggregator.name, records, value)
       end
 
       private
 
-      attr_reader :aggregate,
+      attr_reader :aggregator,
                   :group_ids,
                   :records,
                   :resolver,

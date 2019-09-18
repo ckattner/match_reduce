@@ -8,30 +8,30 @@
 #
 
 module MatchReduce
-  # The Index holds all the aggregates, the reverse lookup data structure, and the ability
-  # to retrieve aggregates based on a pattern
+  # The Index holds all the aggregators, the reverse lookup data structure, and the ability
+  # to retrieve aggregators based on a pattern
   class Index
     extend Forwardable
 
-    attr_reader :aggregates,
+    attr_reader :aggregators,
                 :any,
                 :lookup
 
     def_delegators :record, :keys
 
-    def initialize(aggregates = [], any: ANY)
-      @any        = any
-      @aggregates = Aggregate.array(aggregates).uniq(&:name)
-      @lookup     = {}
+    def initialize(aggregators = [], any: ANY)
+      @any = any
+      @aggregators = Aggregator.array(aggregators).uniq(&:name)
+      @lookup = {}
 
-      all_keys = @aggregates.flat_map(&:keys)
+      all_keys = @aggregators.flat_map(&:keys)
       @record  = HashMath::Record.new(all_keys, any)
 
-      @aggregates.map do |aggregate|
-        aggregate.patterns.each do |pattern|
+      @aggregators.map do |aggregator|
+        aggregator.patterns.each do |pattern|
           normalized_pattern = record.make!(pattern)
 
-          get(normalized_pattern) << aggregate
+          get(normalized_pattern) << aggregator
         end
       end
 

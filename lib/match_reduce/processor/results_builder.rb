@@ -11,21 +11,21 @@ require_relative 'result_builder'
 
 module MatchReduce
   class Processor
-    # This class knows how to group together aggregates in order to produce results.
+    # This class knows how to group together aggregators in order to produce results.
     class ResultsBuilder
       attr_reader :resolver
 
-      def initialize(aggregates, resolver)
-        raise ArgumentError, 'aggregates are required' unless aggregates
+      def initialize(aggregators, resolver)
+        raise ArgumentError, 'aggregators are required' unless aggregators
 
-        @result_by_name = aggregates.map { |a| [a.name, ResultBuilder.new(a, resolver)] }.to_h
+        @result_by_name = aggregators.map { |a| [a.name, ResultBuilder.new(a, resolver)] }.to_h
         @resolver       = resolver
 
         freeze
       end
 
-      def add(aggregate, record, group_id)
-        tap { result_by_name[aggregate.name].add(record, group_id) }
+      def add(aggregator, record, group_id)
+        tap { result_by_name[aggregator.name].add(record, group_id) }
       end
 
       def results

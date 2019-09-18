@@ -9,7 +9,7 @@
 
 module MatchReduce
   class Processor
-    # This is the main resulting value object returned, one per aggregate.
+    # This is the main resulting value object returned, one per aggregator.
     class Result
       attr_reader :name, :records, :value
 

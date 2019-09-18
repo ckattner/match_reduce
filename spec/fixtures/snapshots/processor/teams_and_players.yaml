@@ -29,7 +29,7 @@ records:
     player: rip_hamilton
     player_points: 100
 
-aggregates:
+aggregators:
   - name: total_points_by_team_player
     patterns:
     sum_reducer_key: player_points

@@ -9,7 +9,7 @@
 
 require 'spec_helper'
 
-describe MatchReduce::Aggregate do
+describe MatchReduce::Aggregator do
   describe '#initialize' do
     it 'sets patterns to at least one hash' do
       subject = described_class.new(name: :sig1)

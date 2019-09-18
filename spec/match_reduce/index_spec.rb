@@ -11,23 +11,23 @@ require 'spec_helper'
 
 describe MatchReduce::Index do
   def lookup_by_name(lookup)
-    lookup.each_with_object({}) do |(pattern, aggregates), memo|
-      memo[pattern] = aggregates.map(&:name)
+    lookup.each_with_object({}) do |(pattern, aggregators), memo|
+      memo[pattern] = aggregators.map(&:name)
     end
   end
 
   let(:base_value) { MatchReduce::ANY }
 
   describe '#initialization' do
-    context 'constructing aggregates' do
-      specify 'when all aggregates when empty' do
+    context 'constructing aggregators' do
+      specify 'when all aggregators when empty' do
         subject = described_class.new
 
-        expect(subject.aggregates).to eq([])
+        expect(subject.aggregators).to eq([])
       end
 
-      specify 'only each first unique aggregate name is kept' do
-        aggregates = [
+      specify 'only each first unique aggregator name is kept' do
+        aggregators = [
           { name: :sig3 },
           { name: :sig1 },
           { name: 'sig2' },
@@ -39,14 +39,14 @@ describe MatchReduce::Index do
           { name: :sig5 }
         ]
 
-        subject = described_class.new(aggregates)
+        subject = described_class.new(aggregators)
 
-        expect(subject.aggregates.length).to eq(7)
+        expect(subject.aggregators.length).to eq(7)
       end
     end
 
     context 'constructing lookup' do
-      it 'creates lookup with aggregates' do
+      it 'creates lookup with aggregators' do
         subject = described_class.new
 
         expected = {}
@@ -54,13 +54,13 @@ describe MatchReduce::Index do
         expect(subject.lookup).to eq(expected)
       end
 
-      it 'creates lookup with aggregates that have no patterns' do
-        aggregates = [
+      it 'creates lookup with aggregators that have no patterns' do
+        aggregators = [
           { name: :sig3 },
           { name: :sig1 }
         ]
 
-        subject = described_class.new(aggregates)
+        subject = described_class.new(aggregators)
 
         expected = {
           {} => %i[sig3 sig1]
@@ -69,8 +69,8 @@ describe MatchReduce::Index do
         expect(lookup_by_name(subject.lookup)).to eq(expected)
       end
 
-      it 'creates lookup with aggregates that have patterns and no patterns' do
-        aggregates = [
+      it 'creates lookup with aggregators that have patterns and no patterns' do
+        aggregators = [
           { name: :sig3 },
           { name: :sig1 },
           {
@@ -79,7 +79,7 @@ describe MatchReduce::Index do
           }
         ]
 
-        subject = described_class.new(aggregates)
+        subject = described_class.new(aggregators)
 
         expected = {
           { 'a' => base_value, 'b' => base_value, 'c' => base_value } => %i[sig3 sig1],

@@ -4,11 +4,11 @@
 
 MatchReduce is a high-speed, in-memory data aggregation and reduction algorithm.  The lifecycle is:
 
-1. define aggregates
+1. define aggregators
 2. pump records into algorithm
 3. grab results
 
-The dataset will only be processed once no matter how many aggregates you define.  An aggregate is expressed as:
+The dataset will only be processed once no matter how many aggregators you define.  An aggregator is expressed as:
 
 * patterns: an array of hashes, which are used to pattern match records
 * reducer: a function, which is used when a record matches
@@ -37,7 +37,7 @@ A very basic example of calling this library would be:
 ````ruby
 require 'match_reduce'
 
-aggregates = [
+aggregators = [
  {
    name: :total_game_points
    reducer: ->(memo, record, resolver) { memo.to_i + resolver.get(record, :game_points).to_i },
@@ -52,7 +52,7 @@ records = [
   { game: 2, game_points: 240, team: 'Bulls', team_points: 110 }
 ]
 
-results = MatchReduce.process(aggregates, records)
+results = MatchReduce.process(aggregators, records)
 ````
 
 `results` would be equal to:
@@ -72,10 +72,10 @@ results = MatchReduce.process(aggregates, records)
 
 Notes:
 
-* Not specifying patterns means: "match on everything"
+* Not specifying patterns, as in the example above, means: "match on everything"
 * group_keys will limit the records matched on, per aggregator, to the first record only.  This is why only the first and third records matched.
-* keys are type-indifferent and will extracted using (the Objectable library)[https://github.com/bluemarblepayroll/objectable].  This means you can leverage dot-notation, non-hash record types, and indifference.  You can also customize the resolver used and pass it as a third argument to MatchReduce#process(aggregates, records, resolver).
-* Names of aggregates are type-sensitive, so: `:total_game_points` and `'total_game_points'` are two different aggregates and will produce two different results.
+* keys are type-indifferent and will extracted using (the Objectable library)[https://github.com/bluemarblepayroll/objectable].  This means you can leverage dot-notation, non-hash record types, and indifference.  You can also customize the resolver used and pass it as a third argument to MatchReduce#process(aggregators, records, resolver).
+* Names of aggregators are type-sensitive, so: `:total_game_points` and `'total_game_points'` are two different aggregators and will produce two different results.
 
 ### Adding Patterns
 
@@ -84,7 +84,7 @@ Let's say we want to discretely know how many points the Bulls, Celtics, and Roc
 ````ruby
 require 'match_reduce'
 
-aggregates = [
+aggregators = [
  {
    name: :bulls_points
    patterns: { team: 'Bulls' },
@@ -112,7 +112,7 @@ records = [
   { game: 2, game_points: 240, team: 'Bulls', team_points: 110 }
 ]
 
-results = MatchReduce.process(aggregates, records)
+results = MatchReduce.process(aggregators, records)
 ````
 
 `results` would now be equal to:
@@ -144,12 +144,12 @@ results = MatchReduce.process(aggregates, records)
 ]
 ````
 
-We could also choose to aggregate multiple teams together by providing multiple patterns:
+We could also choose to aggregator multiple teams together by providing multiple patterns:
 
 ````ruby
 require 'match_reduce'
 
-aggregates = [
+aggregators = [
  {
    name: :bulls_and_celtics_points
    patterns: [
@@ -168,7 +168,7 @@ records = [
   { game: 2, game_points: 240, team: 'Bulls', team_points: 110 }
 ]
 
-results = MatchReduce.process(aggregates, records)
+results = MatchReduce.process(aggregators, records)
 ````
 
 `results` would now be equal to:
@@ -176,7 +176,7 @@ results = MatchReduce.process(aggregates, records)
 ````ruby
 [
   MatchReduce::Processor::Result.new(
-    name: :bulls_points,
+    name: :bulls_and_celtics_points,
     records: [
       { game: 1, game_points: 199, team: 'Bulls', team_points: 100 },
       { game: 1, game_points: 199, team: 'Celtics', team_points: 99 },
