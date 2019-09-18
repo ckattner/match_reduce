@@ -18,10 +18,10 @@ module MatchReduce
 
     def_delegators :results_builder, :results, :resolver
 
-    def_delegators :index, :aggregates
+    def_delegators :index, :aggregates, :any
 
-    def initialize(aggregates, resolver)
-      @index            = Index.new(aggregates)
+    def initialize(aggregates, resolver: Objectable.resolver, any: ANY)
+      @index            = Index.new(aggregates, any: any)
       @results_builder  = ResultsBuilder.new(index.aggregates, resolver)
 
       freeze

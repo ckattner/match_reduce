@@ -38,14 +38,12 @@ describe MatchReduce::Processor do
     )
   end
 
-  let(:resolver) { Objectable.resolver }
-
   describe 'snapshots' do
     yaml_fixture_files('snapshots', 'processor').each_pair do |filename, snapshot_config|
       specify File.basename(filename) do
         example = snapshot(snapshot_config)
 
-        subject = described_class.new(example.aggregates, resolver)
+        subject = described_class.new(example.aggregates)
 
         results = subject.add_each(example.records).results
 

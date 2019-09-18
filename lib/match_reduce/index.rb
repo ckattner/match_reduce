@@ -14,18 +14,18 @@ module MatchReduce
     extend Forwardable
 
     attr_reader :aggregates,
-                :any_value,
+                :any,
                 :lookup
 
     def_delegators :record, :keys
 
-    def initialize(aggregates = [], any_value = ANY)
-      @any_value  = any_value
+    def initialize(aggregates = [], any: ANY)
+      @any        = any
       @aggregates = Aggregate.array(aggregates).uniq(&:name)
       @lookup     = {}
 
       all_keys = @aggregates.flat_map(&:keys)
-      @record  = HashMath::Record.new(all_keys, any_value)
+      @record  = HashMath::Record.new(all_keys, any)
 
       @aggregates.map do |aggregate|
         aggregate.patterns.each do |pattern|
